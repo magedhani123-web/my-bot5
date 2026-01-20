@@ -1,2 +1,6 @@
+undetected-chromedriver
+aiohttp
+numpy
+psutil
 selenium
 requests
