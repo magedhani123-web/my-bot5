@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+👑 ULTIMATE IMPERIAL VIEWER - MILLION SESSIONS EDITION
+تم الدمج: الأجهزة المحدثة، تزييف الموقع، تبديل السرعات، محاكاة البطارية، والبحث الذكي.
+"""
 
 import os
 import time
@@ -15,12 +19,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 # ==========================================
-# ⚙️ الإعدادات الكبرى (مليون جلسة)
+# ⚙️ الإعدادات الكبرى
 # ==========================================
 MAX_SESSIONS = 1000000 
 TOR_PROXY = "socks5://127.0.0.1:9050"
 
-# قائمة الأجهزة المتطورة التي طلبتها
+# قائمة الأجهزة المتطورة والشاملة
 DEVICES = [
     {"name": "iPhone 16 Pro Max", "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1", "plat": "iPhone", "w": 430, "h": 932, "mobile": True},
     {"name": "iPhone 15 Pro", "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1", "plat": "iPhone", "w": 393, "h": 852, "mobile": True},
@@ -41,41 +45,42 @@ VIDEOS_POOL = [
 ]
 
 # ==========================================
-# 🛠️ أدوات الجيش البرمجي (التحقق والتزييف)
+# 🛠️ أدوات التحكم في الهوية (IP/تزييف/سرعة)
 # ==========================================
-def get_current_ip():
-    """إظهار الـ IP المستخدم حالياً عبر Tor"""
+def show_current_ip():
     try:
         proxies = {'http': TOR_PROXY, 'https': TOR_PROXY}
-        return requests.get('https://api.ipify.org', proxies=proxies, timeout=15).text
+        ip = requests.get('https://api.ipify.org', proxies=proxies, timeout=15).text
+        print(f"🌍 IP النشط حالياً: {ip}")
+        return ip
     except:
-        return "جاري انتظار اتصال Tor..."
+        print("⚠️ انتظار اتصال Tor...")
+        return None
 
-def apply_full_stealth(driver, dev):
-    """حقن التزييف الكامل: بطارية، موقع، سرعة، نظام"""
-    batt = random.choice([0.45, 0.65, 0.80, 0.92, 1.0])
-    net_speed = random.randint(10, 50) # Mbps
-    lat = random.uniform(21.0, 45.0)
-    lon = random.uniform(35.0, 55.0)
+def apply_advanced_stealth(driver, device):
+    """تزييف البطارية، الـ GPS، وسرعة الإنترنت"""
+    batt_level = random.choice([0.32, 0.55, 0.78, 0.94, 1.0])
+    net_speed = random.choice([5, 12, 25, 50, 100]) # Mbps محاكاة 4G/5G/WiFi
+    lat = random.uniform(24.0, 48.0)
+    lon = random.uniform(35.0, 58.0)
     
     js = f"""
-    // إخفاء الأتمتة
+    // 1. تزييف الأتمتة
     Object.defineProperty(navigator, 'webdriver', {{get: () => undefined}});
     
-    // تزييف النظام والمنصة
-    Object.defineProperty(navigator, 'platform', {{get: () => '{dev["plat"]}'}});
-    
-    // تزييف البطارية
+    // 2. تزييف البطارية
     if (navigator.getBattery) {{
-        navigator.getBattery = () => Promise.resolve({{charging: true, level: {batt}}});
+        navigator.getBattery = () => Promise.resolve({{
+            charging: true, level: {batt_level}, chargingTime: 0, dischargingTime: Infinity
+        }});
     }}
     
-    // تزييف سرعة الشبكة (تبديل تلقائي)
+    // 3. تزييف سرعة الشبكة التلقائية
     Object.defineProperty(navigator, 'connection', {{
-        get: () => ({{effectiveType: '4g', downlink: {net_speed}, rtt: 50}})
+        get: () => ({{ effectiveType: '4g', downlink: {net_speed}, rtt: 50 }})
     }});
     
-    // تزييف الموقع الجغرافي GPS
+    // 4. تزييف الـ GPS
     navigator.geolocation.getCurrentPosition = (success) => {{
         success({{ coords: {{ latitude: {lat}, longitude: {lon}, accuracy: 10 }} }});
     }};
@@ -83,101 +88,108 @@ def apply_full_stealth(driver, dev):
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": js})
 
 # ==========================================
-# 📺 تنفيذ الجلسة (فتح المتصفح والمشاهدة)
+# 📺 محرك الجلسات (المشاهدة والتبديل)
 # ==========================================
-def run_imperial_session(num):
-    # الخطوة 1: تنظيف النظام (متصفح واحد فقط في نفس الوقت)
+def run_session(session_num):
+    # ضمان عدم تشغيل عدة متصفحات في وقت واحد
     os.system("pkill -f chrome 2>/dev/null || true")
     
     device = random.choice(DEVICES)
     video = random.choice(VIDEOS_POOL)
-    ip_addr = get_current_ip()
     
-    print(f"\n--- 🚀 الجلسة رقم {num} ---")
-    print(f"🌍 IP الحالي: {ip_addr}")
-    print(f"📱 الجهاز المحاكى: {device['name']}")
-    print(f"📺 الفيديو المستهدف: {video['keywords']}")
+    print(f"\n{'='*50}")
+    print(f"🚀 بدء الجلسة الإمبراطورية #{session_num}")
+    show_current_ip()
+    print(f"📱 الجهاز: {device['name']} | 📺 الفيديو: {video['keywords']}")
 
-    # الخطوة 2: إعدادات المتصفح
-    temp_dir = tempfile.mkdtemp(prefix="imp_")
+    profile_dir = tempfile.mkdtemp(prefix="imperial_")
     options = uc.ChromeOptions()
-    options.add_argument(f'--user-data-dir={temp_dir}')
+    options.add_argument(f'--user-data-dir={profile_dir}')
     options.add_argument(f'--user-agent={device["ua"]}')
     options.add_argument(f'--proxy-server={TOR_PROXY}')
     options.add_argument(f"--window-size={device['w']},{device['h']}")
-    options.add_argument('--headless') # للعمل بصمت وتوفير موارد السيرفر
+    options.add_argument('--headless') # للعمل المستمر بدون استهلاك موارد الشاشة
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--mute-audio')
 
-    driver = None
     try:
         driver = uc.Chrome(options=options, use_subprocess=True)
-        apply_full_stealth(driver, device)
-        
-        # الخطوة 3: محاكاة البحث (لضمان احتساب المشاهدة 100%)
+        apply_advanced_stealth(driver, device)
+        wait = WebDriverWait(driver, 30)
+
+        # 1. سلوك المشاهدة الذكي: البحث بالكلمات المفتاحية
         driver.get("https://www.youtube.com")
-        time.sleep(random.randint(5, 8))
+        time.sleep(random.randint(4, 7))
         
         try:
-            # كتابة الكلمات المفتاحية في خانة البحث
-            search = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "search_query")))
+            search_box = wait.until(EC.presence_of_element_located((By.NAME, "search_query")))
             for char in video['keywords']:
-                search.send_keys(char)
+                search_box.send_keys(char)
                 time.sleep(random.uniform(0.1, 0.3))
-            search.send_keys(Keys.ENTER)
+            search_box.send_keys(Keys.ENTER)
             time.sleep(5)
             
-            # النقر على الفيديو من النتائج
-            target = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, f"//a[contains(@href, '{video['id']}')]")))
-            target.click()
+            # النقر على الفيديو المستهدف
+            video_element = wait.until(EC.element_to_be_clickable((By.XPATH, f"//a[contains(@href, '{video['id']}')]")))
+            video_element.click()
         except:
-            # إذا فشل البحث، نذهب للرابط المباشر لضمان عدم ضياع الجلسة
+            # رابط مباشر إذا فشل البحث لضمان احتساب الجلسة
             driver.get(f"https://www.youtube.com/watch?v={video['id']}")
 
-        # الخطوة 4: التلاعب بالمشغل (السرعة 2x)
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.TAG_NAME, "video")))
-        driver.execute_script("document.querySelector('video').playbackRate = 2.0; document.querySelector('video').play();")
-        
-        # الخطوة 5: وقت المشاهدة العشوائي
-        duration = random.randint(100, 180)
-        print(f"⏱️ مشاهدة جارية بوضع التسريع لمدة {duration} ثانية...")
-        
-        # عمل سكرول بسيط لمحاكاة البشر
-        time.sleep(duration // 2)
-        driver.execute_script(f"window.scrollBy(0, {random.randint(200, 500)});")
-        time.sleep(duration // 2)
+        # 2. تشغيل الفيديو وتسريع السرعة عشوائياً
+        wait.until(EC.presence_of_element_located((By.TAG_NAME, "video")))
+        speed = random.choice([1.25, 1.5, 2.0])
+        driver.execute_script(f"document.querySelector('video').playbackRate = {speed};")
+        driver.execute_script("document.querySelector('video').play();")
+        print(f"⚡ تم تفعيل التسريع: {speed}x")
 
-        # الخطوة 6: مشاهدة فيديو مقترح في النهاية (خوارزمية يوتيوب تحب هذا)
+        # 3. وقت المشاهدة (لضمان احتساب 100%)
+        watch_duration = random.randint(110, 200)
+        print(f"⏳ مشاهدة جارية لمدة {watch_duration} ثانية...")
+        
+        # محاكاة تفاعل بشري (Scroll)
+        time.sleep(watch_duration // 2)
+        driver.execute_script(f"window.scrollBy(0, {random.randint(200, 600)});")
+        time.sleep(watch_duration // 2)
+
+        # 4. التفاعل (لايك عشوائي)
+        if random.random() < 0.4:
+            try:
+                driver.find_element(By.XPATH, "//button[contains(@aria-label, 'like')]").click()
+                print("👍 تم وضع إعجاب (Like)")
+            except: pass
+
+        # 5. مشاهدة فيديو مقترح في النهاية
         try:
             suggestions = driver.find_elements(By.CSS_SELECTOR, "a.ytd-thumbnail")
             if suggestions:
                 suggestions[0].click()
-                time.sleep(15)
+                time.sleep(20) 
         except: pass
 
-        print(f"✅ انتهت الجلسة {num} بنجاح.")
-        return True
+        print(f"✅ اكتملت الجلسة {session_num} بنجاح.")
+        driver.quit()
 
     except Exception as e:
-        print(f"❌ حدث خطأ في الجلسة: {str(e)[:50]}")
-        return False
+        print(f"❌ تعثرت الجلسة: {str(e)[:50]}")
     finally:
-        if driver: driver.quit()
-        if os.path.exists(temp_dir): shutil.rmtree(temp_dir, ignore_errors=True)
+        # تنظيف المجلدات المؤقتة فوراً لضمان عدم امتلاء القرص
+        if os.path.exists(profile_dir):
+            shutil.rmtree(profile_dir, ignore_errors=True)
 
 # ==========================================
-# 🏁 نقطة الانطلاق (التكرار مليون مرة)
+# 🏁 المشغل الرئيسي (هدف: مليون جلسة)
 # ==========================================
 if __name__ == "__main__":
-    print("👑 بدأ جيش المشاهدات الإمبراطوري... الهدف: مليون جلسة")
+    print("👑 جيش المشاهدات الإمبراطوري في وضع الاستعداد...")
     for i in range(1, MAX_SESSIONS + 1):
-        run_imperial_session(i)
+        run_session(i)
         
-        # استراحة بسيطة لتجديد الاتصال
-        time.sleep(random.randint(3, 7))
+        # استراحة بسيطة لتجديد الاتصال والـ IP
+        time.sleep(random.randint(5, 10))
         
-        # ميزة التوقف الآمن (إذا أنشأت ملف باسم stop.txt سيتوقف السكربت)
+        # إيقاف يدوي إذا وجد ملف stop.txt
         if os.path.exists("stop.txt"):
-            print("🛑 تم العثور على طلب إيقاف. وداعاً!")
+            print("🛑 تم إيقاف السكربت بناءً على طلبك.")
             break
